@@ -16,7 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let navigationVC = window?.rootViewController as? UINavigationController
+        let lessonVC = navigationVC?.viewControllers[0] as! LessonTableViewController
+        lessonVC.moc = persistentContainer.viewContext
+        
         return true
     }
 

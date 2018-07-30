@@ -11,9 +11,26 @@ import CoreData
 
 class LessonTableViewController: UITableViewController {
     
+    // MARK: - Public Properties
+    
+    var moc: NSManagedObjectContext? {
+        didSet {
+            if let moc = moc {
+                lessonService = LessonService(moc: moc)
+            }
+        }
+    }
+    
+    
+    // MARK: - Private Properties
+    
+    private var lessonService: LessonService?
+    private var studentList = [Student]()
+    
     let student = ["Jan", "Jakub", "Michaela"]
 
     @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
+        present(alertController(actionType: "add"), animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -40,7 +57,7 @@ class LessonTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return student.count
+        return studentList.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -51,6 +68,43 @@ class LessonTableViewController: UITableViewController {
         return cell
     }
     
-
+    // MARK: - Private
+    
+    private func alertController(actionType: String) -> UIAlertController {
+        let alertController = UIAlertController(title: "Keystone Park Lesson", message: "Student Info", preferredStyle: .alert)
+        alertController.addTextField { (textField: UITextField) in
+            textField.placeholder = "Name"
+        }
+        
+        alertController.addTextField { (textField: UITextField) in
+            textField.placeholder = "Lesson: Type: Ski | Snowboard"
+        }
+        
+        let defaultAction = UIAlertAction(title: actionType.uppercased(), style: .default) { [weak self] (action) in
+            guard let studentName = alertController.textFields?[0].text, let lesson = alertController.textFields?[1].text else { return }
+            
+            if actionType.caseInsensitiveCompare("add") == .orderedSame {
+                if let lessonType = LessonType(rawValue: lesson.lowercased()) {
+                    self?.lessonService?.addStudent(name: studentName, for: lessonType, completion: { (success, students) in
+                        if success {
+                            self?.studentList = students
+                        }
+                    })
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in
+            // TODO
+        }
+        
+        alertController.addAction(defaultAction)
+        alertController.addAction(cancelAction)
+        
+        return alertController
+    }
 
 }
