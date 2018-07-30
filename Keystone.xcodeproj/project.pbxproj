@@ -56,15 +56,47 @@
 		3D8B6D81210FAB05008DD74F /* Keystone */ = {
 			isa = PBXGroup;
 			children = (
+				3D8B6D97210FAB1B008DD74F /* Model */,
+				3D8B6D99210FAB87008DD74F /* View */,
+				3D8B6D9A210FAB8F008DD74F /* Controller */,
+				3D8B6D98210FAB2B008DD74F /* Supporting Files */,
+			);
+			path = Keystone;
+			sourceTree = "<group>";
+		};
+		3D8B6D97210FAB1B008DD74F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3D8B6D89210FAB05008DD74F /* Keystone.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3D8B6D98210FAB2B008DD74F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
 				3D8B6D82210FAB05008DD74F /* AppDelegate.swift */,
-				3D8B6D84210FAB05008DD74F /* ViewController.swift */,
-				3D8B6D86210FAB05008DD74F /* Main.storyboard */,
 				3D8B6D8C210FAB06008DD74F /* Assets.xcassets */,
 				3D8B6D8E210FAB06008DD74F /* LaunchScreen.storyboard */,
 				3D8B6D91210FAB06008DD74F /* Info.plist */,
-				3D8B6D89210FAB05008DD74F /* Keystone.xcdatamodeld */,
 			);
-			path = Keystone;
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3D8B6D99210FAB87008DD74F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3D8B6D86210FAB05008DD74F /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		3D8B6D9A210FAB8F008DD74F /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3D8B6D84210FAB05008DD74F /* ViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,7 +318,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5SQFG95Y4R;
-				INFOPLIST_FILE = Keystone/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Keystone/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -304,7 +336,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5SQFG95Y4R;
-				INFOPLIST_FILE = Keystone/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Keystone/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
