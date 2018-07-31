@@ -21,62 +21,60 @@ class LessonTableViewController: UITableViewController {
         }
     }
     
-    
     // MARK: - Private Properties
-    
     private var lessonService: LessonService?
     private var studentList = [Student]()
-
+    
     @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
         present(alertController(actionType: "add"), animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        loadStudents()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return studentList.count
     }
-
+    
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "studentCell", for: indexPath)
-
+        
         cell.textLabel?.text = studentList[indexPath.row].name
         cell.detailTextLabel?.text = studentList[indexPath.row].lesson?.type
-
+        
         return cell
     }
+    
     
     // MARK: - Private
     
     private func alertController(actionType: String) -> UIAlertController {
         let alertController = UIAlertController(title: "Keystone Park Lesson", message: "Student Info", preferredStyle: .alert)
+        
         alertController.addTextField { (textField: UITextField) in
             textField.placeholder = "Name"
+            
         }
         
         alertController.addTextField { (textField: UITextField) in
-            textField.placeholder = "Lesson: Type: Ski | Snowboard"
+            textField.placeholder = "Lesson Type: Ski | Snowboard"
         }
         
         let defaultAction = UIAlertAction(title: actionType.uppercased(), style: .default) { [weak self] (action) in
@@ -93,11 +91,12 @@ class LessonTableViewController: UITableViewController {
             }
             
             DispatchQueue.main.async {
-                self?.tableView.reloadData()            }
+                self?.loadStudents()
+            }
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in
-            // TODO
+            
         }
         
         alertController.addAction(defaultAction)
@@ -105,6 +104,7 @@ class LessonTableViewController: UITableViewController {
         
         return alertController
     }
+    
     
     private func loadStudents() {
         if let students = lessonService?.getAllStudents() {

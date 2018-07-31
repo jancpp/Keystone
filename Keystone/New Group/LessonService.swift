@@ -25,22 +25,6 @@ class LessonService {
     
     // MARK: - Public
     
-    func addStudent(name: String, for type: LessonType, completion: StudentHandler) {
-        let student = Student(context: moc)
-        student.name = name
-        
-        if let lesson = lessonExists(type) {
-            register(student, for: lesson)
-            students.append(student)
-            
-            completion(true, students)
-        }
-        
-        
-    }
-    
-    // MARK: - Public
-    
     // READ
     func getAllStudents() -> [Student]? {
         let sortByLesson = NSSortDescriptor(key: "lesson.type", ascending: true)
@@ -62,6 +46,22 @@ class LessonService {
     }
     
     // CREATE
+    func addStudent(name: String, for type: LessonType, completion: StudentHandler) {
+        let student = Student(context: moc)
+        student.name = name
+        
+        if let lesson = lessonExists(type) {
+            register(student, for: lesson)
+            students.append(student)
+            
+            completion(true, students)
+        }
+        
+        save()
+    }
+    
+    // MARK: - Private
+    
     private func lessonExists(_ type: LessonType) -> Lesson? {
         let request: NSFetchRequest<Lesson> = Lesson.fetchRequest()
         request.predicate = NSPredicate(format: "type = %@", type.rawValue)
@@ -71,8 +71,9 @@ class LessonService {
         do {
             let result = try moc.fetch(request)
             lesson = result.isEmpty ? addNew(lesson: type) : result.first
-        } catch let error as NSError {
-            print("error getting lesson: \(error.localizedDescription)")
+        }
+        catch let error as NSError {
+            print("Error getting lesson: \(error.localizedDescription)")
         }
         
         return lesson
@@ -92,7 +93,8 @@ class LessonService {
     private func save() {
         do {
             try moc.save()
-        } catch let error as NSError {
+        }
+        catch let error as NSError {
             print("Save failed: \(error.localizedDescription)")
         }
     }
