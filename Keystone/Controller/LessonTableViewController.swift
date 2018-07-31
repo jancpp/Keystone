@@ -24,6 +24,7 @@ class LessonTableViewController: UITableViewController {
     // MARK: - Private Properties
     private var lessonService: LessonService?
     private var studentList = [Student]()
+    private var studentToUpdate: Student?
     
     @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
         present(alertController(actionType: "add"), animated: true, completion: nil)
@@ -62,19 +63,27 @@ class LessonTableViewController: UITableViewController {
         return cell
     }
     
+    // MARK: - Table View Delegte
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        studentToUpdate = studentList[indexPath.row]
+        present(alertController(actionType: "update"), animated: true, completion: nil)
+    }
+    
     
     // MARK: - Private
     
     private func alertController(actionType: String) -> UIAlertController {
         let alertController = UIAlertController(title: "Keystone Park Lesson", message: "Student Info", preferredStyle: .alert)
         
-        alertController.addTextField { (textField: UITextField) in
+        alertController.addTextField {[weak self] (textField: UITextField) in
             textField.placeholder = "Name"
-            
+            textField.text = self?.studentToUpdate == nil ? "" : self?.studentToUpdate?.name
         }
         
-        alertController.addTextField { (textField: UITextField) in
+        alertController.addTextField { [weak self] (textField: UITextField) in
             textField.placeholder = "Lesson Type: Ski | Snowboard"
+            textField.text = self?.studentToUpdate == nil ? "" : self?.studentToUpdate?.lesson?.type
         }
         
         let defaultAction = UIAlertAction(title: actionType.uppercased(), style: .default) { [weak self] (action) in
@@ -88,6 +97,16 @@ class LessonTableViewController: UITableViewController {
                         }
                     })
                 }
+            } else {
+                guard let name = alertController.textFields?.first?.text, !name.isEmpty,
+                    let studentToUpdate = self?.studentToUpdate,
+                    let lessonType = alertController.textFields?[1].text
+                    else {
+                        return
+                }
+                
+                self?.lessonService?.update(currentStudent: studentToUpdate, withName: name, forLesson: lessonType)
+                self?.studentToUpdate = nil
             }
             
             DispatchQueue.main.async {

@@ -60,6 +60,29 @@ class LessonService {
         save()
     }
     
+    // UPDATE
+    func update(currentStudent student: Student, withName name: String, forLesson lesson: String) {
+        // Check if student current lesson == new lesson type
+        if student.lesson?.type?.caseInsensitiveCompare(lesson) == .orderedSame {
+            let lesson = student.lesson // many students
+            let studentList = Array(lesson?.students?.mutableCopy() as! NSMutableSet) as! [Student]
+            
+            if let index = studentList.index(where: { $0 == student }) {
+                studentList[index].name = name
+                lesson?.students = NSSet(array: studentList)
+            }
+        } else {
+            if let lesson = lessonExists(LessonType(rawValue: lesson)!) {
+                lesson.removeFromStudents(student)
+                
+                student.name = name
+                register(student, for: lesson)
+            }
+        }
+        
+        save()
+    }
+    
     // MARK: - Private
     
     private func lessonExists(_ type: LessonType) -> Lesson? {
