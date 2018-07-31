@@ -26,8 +26,6 @@ class LessonTableViewController: UITableViewController {
     
     private var lessonService: LessonService?
     private var studentList = [Student]()
-    
-    let student = ["Jan", "Jakub", "Michaela"]
 
     @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
         present(alertController(actionType: "add"), animated: true, completion: nil)
@@ -63,7 +61,8 @@ class LessonTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "studentCell", for: indexPath)
 
-        cell.textLabel?.text = student[indexPath.row]
+        cell.textLabel?.text = studentList[indexPath.row].name
+        cell.detailTextLabel?.text = studentList[indexPath.row].lesson?.type
 
         return cell
     }
@@ -106,5 +105,11 @@ class LessonTableViewController: UITableViewController {
         
         return alertController
     }
-
+    
+    private func loadStudents() {
+        if let students = lessonService?.getAllStudents() {
+            studentList = students
+            tableView.reloadData()
+        }
+    }
 }

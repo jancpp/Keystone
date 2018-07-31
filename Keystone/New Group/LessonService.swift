@@ -39,11 +39,32 @@ class LessonService {
         
     }
     
-    // MARK: - Private
+    // MARK: - Public
     
+    // READ
+    func getAllStudents() -> [Student]? {
+        let sortByLesson = NSSortDescriptor(key: "lesson.type", ascending: true)
+        let sortByName = NSSortDescriptor(key: "name", ascending: true)
+        let sortDescriptors = [sortByLesson, sortByName]
+        
+        let request: NSFetchRequest<Student> = Student.fetchRequest()
+        request.sortDescriptors = sortDescriptors
+        
+        do {
+            students = try moc.fetch(request)
+            return students
+        }
+        catch let error as NSError {
+            print("Error fetching students: \(error.localizedDescription)")
+        }
+        
+        return nil
+    }
+    
+    // CREATE
     private func lessonExists(_ type: LessonType) -> Lesson? {
         let request: NSFetchRequest<Lesson> = Lesson.fetchRequest()
-        request.predicate = NSPredicate(format: "type = @%", type.rawValue)
+        request.predicate = NSPredicate(format: "type = %@", type.rawValue)
         
         var lesson: Lesson?
         
