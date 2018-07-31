@@ -70,6 +70,15 @@ class LessonTableViewController: UITableViewController {
         present(alertController(actionType: "update"), animated: true, completion: nil)
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            lessonService?.delete(student: studentList[indexPath.row])
+            studentList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        
+        tableView.reloadData()
+    }
     
     // MARK: - Private
     
@@ -106,7 +115,7 @@ class LessonTableViewController: UITableViewController {
                 }
                 
                 self?.lessonService?.update(currentStudent: studentToUpdate, withName: name, forLesson: lessonType)
-                self?.studentToUpdate = nil
+                self?.studentToUpdate = nil // clears up textFields in alert
             }
             
             DispatchQueue.main.async {
@@ -114,8 +123,8 @@ class LessonTableViewController: UITableViewController {
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in
-            
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { [weak self] (action) in
+            self?.studentToUpdate = nil // clears up textFields in alert
         }
         
         alertController.addAction(defaultAction)
