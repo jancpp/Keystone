@@ -11,7 +11,14 @@ import CoreData
 
 class LessonTableViewController: UITableViewController {
     
-    // MARK: - Public Properties
+    // MARK: - IBAction
+    
+    @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
+        present(alertController(actionType: "add"), animated: true, completion: nil)
+    }
+    
+    
+    // MARK: - Public properties
     
     var moc: NSManagedObjectContext? {
         didSet {
@@ -21,18 +28,21 @@ class LessonTableViewController: UITableViewController {
         }
     }
     
-    // MARK: - Private Properties
-    private var lessonService: LessonService?
+    
+    // MARK: - Private properties
+    
     private var studentList = [Student]()
+    private var lessonService: LessonService?
     private var studentToUpdate: Student?
     
-    @IBAction func addStudentAction(_ sender: UIBarButtonItem) {
-        present(alertController(actionType: "add"), animated: true, completion: nil)
-    }
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         loadStudents()
     }
     
@@ -41,18 +51,24 @@ class LessonTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueLesson" {
+            let destination = segue.destination as! LessonDetailTableViewController
+            destination.moc = moc
+        }
+    }
+    
+    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return studentList.count
     }
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "studentCell", for: indexPath)
@@ -63,15 +79,18 @@ class LessonTableViewController: UITableViewController {
         return cell
     }
     
-    // MARK: - Table View Delegte
+    
+    // MARK: - TableView delegate
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         studentToUpdate = studentList[indexPath.row]
         present(alertController(actionType: "update"), animated: true, completion: nil)
     }
     
+    // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            // Delete the row from the data source
             lessonService?.delete(student: studentList[indexPath.row])
             studentList.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
@@ -80,12 +99,13 @@ class LessonTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    // MARK: - Private
+    
+    // MARK: - Private functions
     
     private func alertController(actionType: String) -> UIAlertController {
-        let alertController = UIAlertController(title: "Keystone Park Lesson", message: "Student Info", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Keystone Park Lesson", message: "Student Info", preferredStyle: UIAlertController.Style.alert)
         
-        alertController.addTextField {[weak self] (textField: UITextField) in
+        alertController.addTextField { [weak self] (textField: UITextField) in
             textField.placeholder = "Name"
             textField.text = self?.studentToUpdate == nil ? "" : self?.studentToUpdate?.name
         }
@@ -95,7 +115,7 @@ class LessonTableViewController: UITableViewController {
             textField.text = self?.studentToUpdate == nil ? "" : self?.studentToUpdate?.lesson?.type
         }
         
-        let defaultAction = UIAlertAction(title: actionType.uppercased(), style: .default) { [weak self] (action) in
+        let defaultAction = UIAlertAction(title: actionType.uppercased(), style: UIAlertAction.Style.default) { [weak self] (action: UIAlertAction) in
             guard let studentName = alertController.textFields?[0].text, let lesson = alertController.textFields?[1].text else { return }
             
             if actionType.caseInsensitiveCompare("add") == .orderedSame {
@@ -106,7 +126,8 @@ class LessonTableViewController: UITableViewController {
                         }
                     })
                 }
-            } else {
+            }
+            else {
                 guard let name = alertController.textFields?.first?.text, !name.isEmpty,
                     let studentToUpdate = self?.studentToUpdate,
                     let lessonType = alertController.textFields?[1].text
@@ -115,7 +136,7 @@ class LessonTableViewController: UITableViewController {
                 }
                 
                 self?.lessonService?.update(currentStudent: studentToUpdate, withName: name, forLesson: lessonType)
-                self?.studentToUpdate = nil // clears up textFields in alert
+                self?.studentToUpdate = nil
             }
             
             DispatchQueue.main.async {
@@ -123,8 +144,8 @@ class LessonTableViewController: UITableViewController {
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { [weak self] (action) in
-            self?.studentToUpdate = nil // clears up textFields in alert
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default) { [weak self] (action) in
+            self?.studentToUpdate = nil
         }
         
         alertController.addAction(defaultAction)
@@ -132,7 +153,6 @@ class LessonTableViewController: UITableViewController {
         
         return alertController
     }
-    
     
     private func loadStudents() {
         if let students = lessonService?.getAllStudents() {

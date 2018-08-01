@@ -18,6 +18,7 @@ typealias StudentHandler = (Bool, [Student]) -> ()
 class LessonService {
     private let moc: NSManagedObjectContext
     private var students = [Student]()
+    private var lessons = [Lesson]()
     
     init(moc: NSManagedObjectContext) {
         self.moc = moc
@@ -37,6 +38,24 @@ class LessonService {
         do {
             students = try moc.fetch(request)
             return students
+        }
+        catch let error as NSError {
+            print("Error fetching students: \(error.localizedDescription)")
+        }
+        
+        return nil
+    }
+    
+    func getAvailableLesson() -> [Lesson]? {
+        let sortByLesson = NSSortDescriptor(key: "type", ascending: true)
+        let sortDescriptors = [sortByLesson]
+        
+        let request: NSFetchRequest<Lesson> = Lesson.fetchRequest()
+        request.sortDescriptors = sortDescriptors
+        
+        do {
+            lessons = try moc.fetch(request)
+            return lessons
         }
         catch let error as NSError {
             print("Error fetching students: \(error.localizedDescription)")
@@ -83,15 +102,19 @@ class LessonService {
         save()
     }
     
-    // UPDATE
-    
+    // DELETE
     func delete(student: Student) {
         let lesson = student.lesson
         
-        students = students.filter( { $0 != student } )
+        students = students.filter({ $0 != student })
         lesson?.removeFromStudents(student)
         moc.delete(student)
         save()
+    }
+    
+    func deleteLesson(lesson: Lesson, deleteHandler: @escaping (Bool) -> Void) {
+        moc.delete(lesson)
+        save(completion: deleteHandler)
     }
     
     // MARK: - Private
@@ -124,12 +147,22 @@ class LessonService {
         student.lesson = lesson
     }
     
-    private func save() {
+    
+    private func save(completion: ((Bool) -> Void)? = nil) {
+        let success: Bool
+        
         do {
             try moc.save()
+            success = true
         }
         catch let error as NSError {
             print("Save failed: \(error.localizedDescription)")
+            moc.rollback()
+            success = false
+        }
+        
+        if let completion = completion {
+            completion(success)
         }
     }
 }

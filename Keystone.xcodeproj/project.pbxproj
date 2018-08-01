@@ -19,6 +19,7 @@
 		3D8B6DA3210FCA08008DD74F /* Student+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8B6D9F210FCA08008DD74F /* Student+CoreDataClass.swift */; };
 		3D8B6DA4210FCA08008DD74F /* Student+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8B6DA0210FCA08008DD74F /* Student+CoreDataProperties.swift */; };
 		3D8B6DA6210FCAA8008DD74F /* LessonService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8B6DA5210FCAA8008DD74F /* LessonService.swift */; };
+		3D927DFB211142270049F5CD /* LessonDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D927DFA211142260049F5CD /* LessonDetailTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		3D8B6D9F210FCA08008DD74F /* Student+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Student+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3D8B6DA0210FCA08008DD74F /* Student+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Student+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3D8B6DA5210FCAA8008DD74F /* LessonService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonService.swift; sourceTree = "<group>"; };
+		3D927DFA211142260049F5CD /* LessonDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +115,7 @@
 			children = (
 				3D8B6D84210FAB05008DD74F /* ViewController.swift */,
 				3D8B6D9B210FAC41008DD74F /* LessonTableViewController.swift */,
+				3D927DFA211142260049F5CD /* LessonDetailTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D927DFB211142270049F5CD /* LessonDetailTableViewController.swift in Sources */,
 				3D8B6DA1210FCA08008DD74F /* Lesson+CoreDataClass.swift in Sources */,
 				3D8B6D85210FAB05008DD74F /* ViewController.swift in Sources */,
 				3D8B6DA4210FCA08008DD74F /* Student+CoreDataProperties.swift in Sources */,
